@@ -26,57 +26,106 @@
         <script src='../libs/sylvester.js' type='application/javascript'></script>
         <script type='application/javascript'>
             <![CDATA[
+                var ccw = function ( a, b, c ) {
+                    return ( b[ 0 ] - a[ 0 ] ) * ( c[ 1 ] - a[ 1 ] ) - ( b[ 1 ] - a[ 1 ] ) * ( c[ 0 ] - a[ 0 ] );
+                };
                 var drawTriangle = function ( ctx, a, b, c, color ) {
-                    ctx.strokeStyle = 'black';
                     ctx.fillStyle = color;
-
                     ctx.beginPath();
-                    ctx.moveTo( a[ 0 ], a[ 1 ] );
-                    ctx.lineTo( b[ 0 ], b[ 1 ] );
-                    ctx.lineTo( c[ 0 ], c[ 1 ] );
+                    ctx.moveTo( a[ 0 ], -a[ 1 ] + 500 );
+                    ctx.lineTo( b[ 0 ], -b[ 1 ] + 500 );
+                    ctx.lineTo( c[ 0 ], -c[ 1 ] + 500 );
                     ctx.closePath();
-
                     ctx.fill();
-                    ctx.stroke();
                 };
 
                 var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
                 var vertices = [
-                    [ -1, 1, 1, 1 ],
-                    [ 1, 1, 1, 1 ],
-                    [ 1, -1, 1, 1 ],
-                    [ -1, -1, 1, 1 ],
-                    [ -1, 1, -1, 1 ],
-                    [ 1, 1, -1, 1 ],
-                    [ 1, -1, -1, 1 ],
+                    [ -1,  1,  1, 1 ],
+                    [  1,  1,  1, 1 ],
+                    [  1, -1,  1, 1 ],
+                    [ -1, -1,  1, 1 ],
+                    [ -1,  1, -1, 1 ],
+                    [  1,  1, -1, 1 ],
+                    [  1, -1, -1, 1 ],
                     [ -1, -1, -1, 1 ]
                 ];
                 var indices = [
-                    [ 0, 1, 2 ],
-                    [ 2, 3, 0 ],
-                    [ 1, 5, 6 ],
-                    [ 6, 2, 1 ],
-                    [ 5, 4, 7 ],
-                    [ 7, 6, 5 ],
-                    [ 4, 0, 3 ],
-                    [ 3, 7, 4 ],
-                    [ 7, 6, 2 ],
+                    // Front
+                    [ 0, 2, 1 ], 
+                    [ 0, 3, 2 ],
+
+                    // Back
+                    [ 5, 7, 4 ],
+                    [ 7, 5, 6 ],
+
+                    // Up
+                    [ 5, 4, 1 ],
+                    [ 1, 4, 0 ],
+
+                    // Down
                     [ 2, 3, 7 ],
-                    [ 4, 5, 1 ],
-                    [ 1, 0, 4 ]
+                    [ 7, 6, 2 ],
+
+                    // Left
+                    [ 0, 4, 3 ],
+                    [ 3, 4, 7 ],
+
+                    // Right
+                    [ 1, 6, 5 ],
+                    [ 1, 2, 6 ]
                 ];
+
+                // Column-major order
+                var project = [
+                    [ 1, 0, 0,    0 ],
+                    [ 0, 1, 0,    0 ],
+                    [ 0, 0, -0.2, 0 ],
+                    [ 0, 0, 2,    1 ]
+                ];
+
+                var theta = 0;
+                var colors = [ 'red', 'green', 'blue', 'magenta', 'cyan', 'yellow' ];
 
                 var render = function () {
                     ctx.clearRect( 0, 0, 500, 500 );
+                    theta += 0.005;
 
+                    // Column major order
+                    var rotateX = [
+                        [ 1, 0,                  0,                  0 ],
+                        [ 0, Math.cos( theta ),  Math.sin( theta ),  0 ],
+                        [ 0, -Math.sin( theta ), Math.cos( theta ),  0 ],
+                        [ 0, 0,                  0,                  1 ]
+                    ];
+                    var rotateY = [
+                        [ Math.cos( theta ), 0, -Math.sin( theta ), 0 ],
+                        [ 0,                 1, 0,                  0 ],
+                        [ Math.sin( theta ), 0, Math.cos( theta ),  0 ],
+                        [ 0,                 0, 0,                  1 ]
+                    ];
+                    var rotateZ = [
+                        [ Math.cos( theta ),  Math.sin( theta ), 0, 0 ],
+                        [ -Math.sin( theta ), Math.cos( theta ), 0, 0 ],
+                        [ 0,                  0,                 1, 0 ],
+                        [ 0,                  0,                 0, 1 ]
+                    ];
+
+                    var projectedVertices = $M( vertices ).multiply(
+                        $M( rotateX ).multiply(
+                            $M( rotateY ).multiply(
+                                $M( rotateZ ).multiply(
+                                    $M( project )
+                                )
+                            )
+                        )
+                    ).elements;
+
+                    var color = 0;
                     indices.forEach( function( value ) {
-                        var a = vertices[ value[ 0 ] ].slice();
-                        var b = vertices[ value[ 1 ] ].slice();
-                        var c = vertices[ value[ 2 ] ].slice();
-
-                        a[ 2 ] = 0.5 * a[ 2 ] + 1.5;
-                        b[ 2 ] = 0.5 * b[ 2 ] + 1.5;
-                        c[ 2 ] = 0.5 * c[ 2 ] + 1.5;
+                        var a = projectedVertices[ value[ 0 ] ].slice();
+                        var b = projectedVertices[ value[ 1 ] ].slice();
+                        var c = projectedVertices[ value[ 2 ] ].slice();
 
                         a[ 0 ] /= a[ 2 ];
                         a[ 1 ] /= a[ 2 ];
@@ -86,22 +135,24 @@
 
                         c[ 0 ] /= c[ 2 ];
                         c[ 1 ] /= c[ 2 ];
-                        for ( var i = 0; i < 2; ++i ) {
-                            a[ i ] *= 125;
-                            a[ i ] += 250;
 
-                            b[ i ] *= 125;
-                            b[ i ] += 250;
+                        var moved = $M( [ a, b, c ] ).multiply( $M( [
+                            [ 125, 0,   0, 0 ],
+                            [ 0,   125, 0, 0 ],
+                            [ 0,   0,   1, 0 ],
+                            [ 250, 250, 0, 1 ]
+                        ] ) ).elements;
+                        a = moved[ 0 ];
+                        b = moved[ 1 ];
+                        c = moved[ 2 ];
 
-                            c[ i ] *= 125;
-                            c[ i ] += 250;
+                        if ( ccw( a, b, c ) > 0 ) {
+                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ] );
                         }
-
-                        drawTriangle( ctx, a, b, c, 'transparent' );
+                        ++color;
                     } );
                 };
-                render();
-                //setInterval( render, 17 );
+                setInterval( render, 17 );
             ]]>
         </script>
     </body>
