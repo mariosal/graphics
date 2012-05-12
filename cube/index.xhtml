@@ -1,0 +1,108 @@
+<?xml version='1.0' ?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+    <head>
+        <title>3D Cube Rotation</title>
+
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
+        <style>
+            h1 {
+                text-align: center;
+                font-family: 'Droid Sans';
+                font-weight: normal;
+            }
+            canvas {
+                display: block;
+                border: 1px #000 solid;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Rotating a 3D cube using Canvas</h1>
+        <canvas width='500' height='500'></canvas>
+
+        <script src='../libs/sylvester.js' type='application/javascript'></script>
+        <script type='application/javascript'>
+            <![CDATA[
+                var drawTriangle = function ( ctx, a, b, c, color ) {
+                    ctx.strokeStyle = 'black';
+                    ctx.fillStyle = color;
+
+                    ctx.beginPath();
+                    ctx.moveTo( a[ 0 ], a[ 1 ] );
+                    ctx.lineTo( b[ 0 ], b[ 1 ] );
+                    ctx.lineTo( c[ 0 ], c[ 1 ] );
+                    ctx.closePath();
+
+                    ctx.fill();
+                    ctx.stroke();
+                };
+
+                var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
+                var vertices = [
+                    [ -1, 1, 1, 1 ],
+                    [ 1, 1, 1, 1 ],
+                    [ 1, -1, 1, 1 ],
+                    [ -1, -1, 1, 1 ],
+                    [ -1, 1, -1, 1 ],
+                    [ 1, 1, -1, 1 ],
+                    [ 1, -1, -1, 1 ],
+                    [ -1, -1, -1, 1 ]
+                ];
+                var indices = [
+                    [ 0, 1, 2 ],
+                    [ 2, 3, 0 ],
+                    [ 1, 5, 6 ],
+                    [ 6, 2, 1 ],
+                    [ 5, 4, 7 ],
+                    [ 7, 6, 5 ],
+                    [ 4, 0, 3 ],
+                    [ 3, 7, 4 ],
+                    [ 7, 6, 2 ],
+                    [ 2, 3, 7 ],
+                    [ 4, 5, 1 ],
+                    [ 1, 0, 4 ]
+                ];
+
+                var render = function () {
+                    ctx.clearRect( 0, 0, 500, 500 );
+
+                    indices.forEach( function( value ) {
+                        var a = vertices[ value[ 0 ] ].slice();
+                        var b = vertices[ value[ 1 ] ].slice();
+                        var c = vertices[ value[ 2 ] ].slice();
+
+                        a[ 2 ] = 0.5 * a[ 2 ] + 1.5;
+                        b[ 2 ] = 0.5 * b[ 2 ] + 1.5;
+                        c[ 2 ] = 0.5 * c[ 2 ] + 1.5;
+
+                        a[ 0 ] /= a[ 2 ];
+                        a[ 1 ] /= a[ 2 ];
+
+                        b[ 0 ] /= b[ 2 ];
+                        b[ 1 ] /= b[ 2 ];
+
+                        c[ 0 ] /= c[ 2 ];
+                        c[ 1 ] /= c[ 2 ];
+                        for ( var i = 0; i < 2; ++i ) {
+                            a[ i ] *= 125;
+                            a[ i ] += 250;
+
+                            b[ i ] *= 125;
+                            b[ i ] += 250;
+
+                            c[ i ] *= 125;
+                            c[ i ] += 250;
+                        }
+
+                        drawTriangle( ctx, a, b, c, 'transparent' );
+                    } );
+                };
+                render();
+                //setInterval( render, 17 );
+            ]]>
+        </script>
+    </body>
+</html>
