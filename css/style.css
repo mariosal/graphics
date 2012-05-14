@@ -1,0 +1,9 @@
+h1 {
+    text-align: center;
+    font-family: 'Droid Sans';
+    font-weight: normal;
+}
+canvas {
+    display: block;
+    margin: 0 auto;
+}

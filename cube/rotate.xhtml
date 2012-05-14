@@ -5,17 +5,7 @@
         <title>3D Cube Rotation</title>
 
         <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
-        <style>
-            h1 {
-                text-align: center;
-                font-family: 'Droid Sans';
-                font-weight: normal;
-            }
-            canvas {
-                display: block;
-                margin: 0 auto;
-            }
-        </style>
+        <link href='../css/style.css' rel='stylesheet' type='text/css' />
     </head>
 
     <body>
@@ -97,7 +87,7 @@
                         var c = vertices[ value[ 2 ] ];
 
                         if ( ccw( a, b, c ) > 0 ) {
-                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ], 'transparent' );
+                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ], colors[ Math.floor( color/ 2 ) ] );
                         }
                         ++color;
                     } );
