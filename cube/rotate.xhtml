@@ -13,7 +13,7 @@
             }
             canvas {
                 display: block;
-                border: 1px #000 solid;
+                border: 1px solid #000;
                 margin: 0 auto;
             }
         </style>
@@ -21,25 +21,14 @@
 
     <body>
         <h1>Rotating a 3D cube using Canvas</h1>
-        <canvas width='500' height='500'></canvas>
+        <canvas width='600' height='600'></canvas>
 
         <script src='../libs/sylvester.js' type='application/javascript'></script>
+        <script src='../libs/helper.js' type='application/javascript'></script>
         <script type='application/javascript'>
             <![CDATA[
-                var ccw = function ( a, b, c ) {
-                    return ( b[ 0 ] - a[ 0 ] ) * ( c[ 1 ] - a[ 1 ] ) - ( b[ 1 ] - a[ 1 ] ) * ( c[ 0 ] - a[ 0 ] );
-                };
-                var drawTriangle = function ( ctx, a, b, c, color ) {
-                    ctx.fillStyle = color;
-                    ctx.beginPath();
-                    ctx.moveTo( a[ 0 ], -a[ 1 ] + 500 );
-                    ctx.lineTo( b[ 0 ], -b[ 1 ] + 500 );
-                    ctx.lineTo( c[ 0 ], -c[ 1 ] + 500 );
-                    ctx.closePath();
-                    ctx.fill();
-                };
-
                 var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
+
                 var vertices = [
                     [ -1,  1,  1, 1 ],
                     [  1,  1,  1, 1 ],
@@ -75,68 +64,38 @@
                     [ 1, 6, 5 ],
                     [ 1, 2, 6 ]
                 ];
-
-                // Column-major order
                 var project = [
-                    [ 1, 0, 0,    0 ],
-                    [ 0, 1, 0,    0 ],
-                    [ 0, 0, -0.2, 0 ],
-                    [ 0, 0, 2,    1 ]
+                    [ 1, 0,  0,    0 ],
+                    [ 0, 1,  0,    0 ],
+                    [ 0, 0, -0.2,  0 ],
+                    [ 0, 0,  2,    1 ]
                 ];
 
-                var theta = 0;
-                var colors = [ 'red', 'green', 'blue', 'magenta', 'cyan', 'yellow' ];
+                var render = function ( ctx, vertices, indices ) {
+                    ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
 
-                var render = function () {
-                    ctx.clearRect( 0, 0, 500, 500 );
-                    theta += 0.005;
-
-                    // Column-major order
-                    var rotateX = [
-                        [ 1, 0,                  0,                  0 ],
-                        [ 0, Math.cos( theta ),  Math.sin( theta ),  0 ],
-                        [ 0, -Math.sin( theta ), Math.cos( theta ),  0 ],
-                        [ 0, 0,                  0,                  1 ]
-                    ];
-                    var rotateY = [
-                        [ Math.cos( theta ), 0, -Math.sin( theta ), 0 ],
-                        [ 0,                 1, 0,                  0 ],
-                        [ Math.sin( theta ), 0, Math.cos( theta ),  0 ],
-                        [ 0,                 0, 0,                  1 ]
-                    ];
-
-                    var projectedVertices = $M( vertices ).x(
-                        $M( rotateX ).x(
-                            $M( rotateY ).x(
-                                $M( project )
-                            )
-                        )
-                    ).elements;
+                    for ( var i = 0; i < vertices.length; ++i ) {
+                        vertices[ i ][ 0 ] /= vertices[ i ][ 2 ];
+                        vertices[ i ][ 1 ] /= vertices[ i ][ 2 ];
+                    }
+                    // Move by an offset
+                    var size = {
+                        x: ctx.canvas.width,
+                        y: ctx.canvas.height
+                    };
+                    vertices = $M( vertices ).x( $M( [
+                        [ size.x / 4, 0,          0, 0 ],
+                        [ 0,          size.y / 4, 0, 0 ],
+                        [ 0,          0,          1, 0 ],
+                        [ size.x / 2, size.y / 2, 0, 1 ]
+                    ] ) ).elements;
 
                     var color = 0;
+                    var colors = [ 'red', 'green', 'blue', 'magenta', 'cyan', 'yellow' ];
                     indices.forEach( function( value ) {
-                        var a = projectedVertices[ value[ 0 ] ].slice();
-                        var b = projectedVertices[ value[ 1 ] ].slice();
-                        var c = projectedVertices[ value[ 2 ] ].slice();
-
-                        a[ 0 ] /= a[ 2 ];
-                        a[ 1 ] /= a[ 2 ];
-
-                        b[ 0 ] /= b[ 2 ];
-                        b[ 1 ] /= b[ 2 ];
-
-                        c[ 0 ] /= c[ 2 ];
-                        c[ 1 ] /= c[ 2 ];
-
-                        var moved = $M( [ a, b, c ] ).x( $M( [
-                            [ 125, 0,   0, 0 ],
-                            [ 0,   125, 0, 0 ],
-                            [ 0,   0,   1, 0 ],
-                            [ 250, 250, 0, 1 ]
-                        ] ) ).elements;
-                        a = moved[ 0 ];
-                        b = moved[ 1 ];
-                        c = moved[ 2 ];
+                        var a = vertices[ value[ 0 ] ];
+                        var b = vertices[ value[ 1 ] ];
+                        var c = vertices[ value[ 2 ] ];
 
                         if ( ccw( a, b, c ) > 0 ) {
                             drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ] );
@@ -144,7 +103,20 @@
                         ++color;
                     } );
                 };
-                setInterval( render, 17 );
+
+                var theta = 0;
+                setInterval( function () {
+                    var projectedVertices = $M( vertices ).x(
+                        $M( rotateX( theta ) ).x(
+                            $M( rotateY( theta ) ).x(
+                                $M( project )
+                            )
+                        )
+                    ).elements;
+                    render( ctx, projectedVertices, indices );
+
+                    theta += 0.005;
+                }, 17 );
             ]]>
         </script>
     </body>
