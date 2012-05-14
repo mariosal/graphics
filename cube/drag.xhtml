@@ -13,7 +13,6 @@
             }
             canvas {
                 display: block;
-                border: 1px solid #000;
                 margin: 0 auto;
             }
         </style>
@@ -111,7 +110,7 @@
                 }, 17 );
 
                 var mouse;
-                ctx.canvas.onmousedown = function ( e ) {
+                document.onmousedown = function ( e ) {
                     mouse = {
                         x: e.offsetX,
                         y: e.offsetY
