@@ -1,0 +1,85 @@
+<?xml version='1.0' ?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+    <head>
+        <title>Teapot Rotation</title>
+
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
+        <style>
+            h1 {
+                text-align: center;
+                font-family: 'Droid Sans';
+                font-weight: normal;
+            }
+            canvas {
+                display: block;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Rotating a Teapot using Canvas</h1>
+        <canvas width='600' height='600'></canvas>
+
+        <script src='../libs/sylvester.js' type='application/javascript'></script>
+        <script src='../libs/helper.js' type='application/javascript'></script>
+        <script src='teapot.js' type='application/javascript'></script>
+        <script type='application/javascript'>
+            <![CDATA[
+                var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
+
+                var project = [
+                    [ 1, 0,  0,    0 ],
+                    [ 0, 1,  0,    0 ],
+                    [ 0, 0, -0.2,  0 ],
+                    [ 0, 0,  50,    1 ]
+                ];
+
+                var render = function ( ctx, vertices, indices ) {
+                    ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
+
+                    for ( var i = 0; i < vertices.length; ++i ) {
+                        vertices[ i ][ 0 ] /= vertices[ i ][ 2 ];
+                        vertices[ i ][ 1 ] /= vertices[ i ][ 2 ];
+                    }
+                    // Move by an offset
+                    var size = {
+                        x: ctx.canvas.width,
+                        y: ctx.canvas.height
+                    };
+                    vertices = $M( vertices ).x( $M( [
+                        [ size.x / 4, 0,          0, 0 ],
+                        [ 0,          size.y / 4, 0, 0 ],
+                        [ 0,          0,          1, 0 ],
+                        [ size.x / 2, size.y / 2, 0, 1 ]
+                    ] ) ).elements;
+
+                    indices.forEach( function( value ) {
+                        var a = vertices[ value[ 0 ] ];
+                        var b = vertices[ value[ 1 ] ];
+                        var c = vertices[ value[ 2 ] ];
+
+                        if ( ccw( a, b, c ) > 0 ) {
+                            drawTriangle( ctx, a, b, c, 'transparent', 'black' );
+                        }
+                    } );
+                };
+
+                var theta = 0;
+                setInterval( function () {
+                    var projectedVertices = $M( vertices ).x(
+                        $M( rotateX( theta ) ).x(
+                            $M( rotateY( theta ) ).x(
+                                $M( project )
+                            )
+                        )
+                    ).elements;
+                    render( ctx, projectedVertices, indices );
+
+                    theta += 0.005;
+                }, 17 );
+            ]]>
+        </script>
+    </body>
+</html>
