@@ -67,7 +67,7 @@
                     [ 1, 0,  0,    0 ],
                     [ 0, 1,  0,    0 ],
                     [ 0, 0, -0.2,  0 ],
-                    [ 0, 0,  2,    1 ]
+                    [ 0, 0,  1,    1 ]
                 ];
 
                 var render = function ( ctx, vertices, indices ) {
@@ -114,7 +114,7 @@
                     ).elements;
                     render( ctx, projectedVertices, indices );
 
-                    theta += 0.005;
+                    theta += 0.015;
                 }, 17 );
             ]]>
         </script>
