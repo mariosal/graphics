@@ -97,7 +97,7 @@
                         var c = vertices[ value[ 2 ] ];
 
                         if ( ccw( a, b, c ) > 0 ) {
-                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ] );
+                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ], 'transparent' );
                         }
                         ++color;
                     } );
@@ -112,21 +112,21 @@
                 var mouse;
                 document.onmousedown = function ( e ) {
                     mouse = {
-                        x: e.offsetX,
-                        y: e.offsetY
+                        x: e.clientX,
+                        y: e.clientY
                     };
 
                     document.onmousemove = function ( e ) {
-                        thetaX = -( mouse.y - e.offsetY ) / 50;
-                        thetaY =  ( mouse.x - e.offsetX ) / 50;
+                        thetaX = -( mouse.y - e.clientY ) / 50;
+                        thetaY =  ( mouse.x - e.clientX ) / 50;
                         vertices = $M( vertices ).x(
                             $M( rotateX( thetaX ) ).x(
                                 $M( rotateY( thetaY ) )
                             )
                         ).elements;
                         mouse = {
-                            x: e.offsetX,
-                            y: e.offsetY
+                            x: e.clientX,
+                            y: e.clientY
                         };
                     };
                 };

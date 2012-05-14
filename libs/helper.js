@@ -21,12 +21,14 @@ var rotateY = function ( theta ) {
 };
 
 // Canvas
-var drawTriangle = function ( ctx, a, b, c, color ) {
-    ctx.fillStyle = color;
+var drawTriangle = function ( ctx, a, b, c, fill, stroke ) {
+    ctx.strokeStyle = stroke;
+    ctx.fillStyle = fill;
     ctx.beginPath();
     ctx.moveTo( a[ 0 ], a[ 1 ] );
     ctx.lineTo( b[ 0 ], b[ 1 ] );
     ctx.lineTo( c[ 0 ], c[ 1 ] );
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
 };

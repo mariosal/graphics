@@ -97,7 +97,7 @@
                         var c = vertices[ value[ 2 ] ];
 
                         if ( ccw( a, b, c ) > 0 ) {
-                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ] );
+                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ], 'transparent' );
                         }
                         ++color;
                     } );
