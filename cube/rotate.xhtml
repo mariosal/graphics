@@ -104,19 +104,11 @@
                         [ Math.sin( theta ), 0, Math.cos( theta ),  0 ],
                         [ 0,                 0, 0,                  1 ]
                     ];
-                    var rotateZ = [
-                        [ Math.cos( theta ),  Math.sin( theta ), 0, 0 ],
-                        [ -Math.sin( theta ), Math.cos( theta ), 0, 0 ],
-                        [ 0,                  0,                 1, 0 ],
-                        [ 0,                  0,                 0, 1 ]
-                    ];
 
-                    var projectedVertices = $M( vertices ).multiply(
-                        $M( rotateX ).multiply(
-                            $M( rotateY ).multiply(
-                                $M( rotateZ ).multiply(
-                                    $M( project )
-                                )
+                    var projectedVertices = $M( vertices ).x(
+                        $M( rotateX ).x(
+                            $M( rotateY ).x(
+                                $M( project )
                             )
                         )
                     ).elements;
@@ -136,7 +128,7 @@
                         c[ 0 ] /= c[ 2 ];
                         c[ 1 ] /= c[ 2 ];
 
-                        var moved = $M( [ a, b, c ] ).multiply( $M( [
+                        var moved = $M( [ a, b, c ] ).x( $M( [
                             [ 125, 0,   0, 0 ],
                             [ 0,   125, 0, 0 ],
                             [ 0,   0,   1, 0 ],
