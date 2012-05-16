@@ -14,45 +14,11 @@
 
         <script src='../libs/sylvester.js' type='application/javascript'></script>
         <script src='../libs/helper.js' type='application/javascript'></script>
+        <script src='cube.js' type='application/javascript'></script>
         <script type='application/javascript'>
             <![CDATA[
                 var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
 
-                var vertices = [
-                    [ -1,  1,  1, 1 ],
-                    [  1,  1,  1, 1 ],
-                    [  1, -1,  1, 1 ],
-                    [ -1, -1,  1, 1 ],
-                    [ -1,  1, -1, 1 ],
-                    [  1,  1, -1, 1 ],
-                    [  1, -1, -1, 1 ],
-                    [ -1, -1, -1, 1 ]
-                ];
-                var indices = [
-                    // Front
-                    [ 0, 2, 1 ], 
-                    [ 0, 3, 2 ],
-
-                    // Back
-                    [ 5, 7, 4 ],
-                    [ 7, 5, 6 ],
-
-                    // Up
-                    [ 5, 4, 1 ],
-                    [ 1, 4, 0 ],
-
-                    // Down
-                    [ 2, 3, 7 ],
-                    [ 7, 6, 2 ],
-
-                    // Left
-                    [ 0, 4, 3 ],
-                    [ 3, 4, 7 ],
-
-                    // Right
-                    [ 1, 6, 5 ],
-                    [ 1, 2, 6 ]
-                ];
                 var project = [
                     [ 1, 0,  0,    0 ],
                     [ 0, 1,  0,    0 ],
@@ -92,12 +58,11 @@
                         ++color;
                     } );
                 };
-                setInterval( function () {
-                    render(
-                        ctx,
-                        $M( vertices ).x( $M( project ) ).elements,
-                        indices );
-                }, 17 );
+                render(
+                    ctx,
+                    $M( vertices ).x( $M( project ) ).elements,
+                    indices
+                );
 
                 var mouse;
                 document.onmousedown = function ( e ) {
@@ -107,13 +72,19 @@
                     };
 
                     document.onmousemove = function ( e ) {
-                        thetaX = -( mouse.y - e.clientY ) / 50;
-                        thetaY =  ( mouse.x - e.clientX ) / 50;
+                        thetaX = -( mouse.y - e.clientY ) / 100;
+                        thetaY =  ( mouse.x - e.clientX ) / 100;
                         vertices = $M( vertices ).x(
                             $M( rotateX( thetaX ) ).x(
                                 $M( rotateY( thetaY ) )
                             )
                         ).elements;
+                        render(
+                            ctx,
+                            $M( vertices ).x( $M( project ) ).elements,
+                            indices
+                        );
+
                         mouse = {
                             x: e.clientX,
                             y: e.clientY
