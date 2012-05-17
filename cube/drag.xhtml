@@ -63,6 +63,11 @@
                         ++color;
                     } );
                 };
+                vertices = $M( vertices ).x(
+                    $M( rotateX( Math.PI / 4 ) ).x(
+                        $M( rotateY( Math.PI / 4 ) )
+                    )
+                ).elements;
                 render(
                     ctx,
                     $M( vertices ).x( $M( project ) ).elements,
