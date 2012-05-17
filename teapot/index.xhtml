@@ -78,6 +78,20 @@
 
                 var mouse;
                 var colors = [];
+                indices.sort( function ( a, b ) {
+                    var aa = vertices[ a[ 0 ] ];
+                    var ab = vertices[ a[ 1 ] ];
+                    var ac = vertices[ a[ 2 ] ];
+
+                    var ba = vertices[ b[ 0 ] ];
+                    var bb = vertices[ b[ 1 ] ];
+                    var bc = vertices[ b[ 2 ] ];
+
+                    aAvg = ( aa[ 2 ] + ab[ 2 ] + ac[ 2 ] ) / 3;
+                    bAvg = ( ba[ 2 ] + bb[ 2 ] + bc[ 2 ] ) / 3;
+
+                    return aAvg - bAvg;
+                } );
                 indices.forEach( function( value, i ) {
                     var a = vertices[ value[ 0 ] ];
                     var b = vertices[ value[ 1 ] ];
@@ -117,7 +131,6 @@
 
                                 return aAvg - bAvg;
                             } );
-
                             indices.forEach( function( value, i ) {
                                 var a = vertices[ value[ 0 ] ];
                                 var b = vertices[ value[ 1 ] ];
