@@ -32,3 +32,17 @@ var drawTriangle = function ( ctx, a, b, c, fill, stroke ) {
     ctx.fill();
     ctx.stroke();
 };
+function flatShading( a, b, c ) {
+   a = $V( [ a[ 0 ], a[ 1 ], a[ 2 ] ] );
+   b = $V( [ b[ 0 ], b[ 1 ], b[ 2 ] ] );
+   c = $V( [ c[ 0 ], c[ 1 ], c[ 2 ] ] );
+
+   var ab = b.subtract( a );
+   var ac = c.subtract( a );
+   var n = ab.cross( ac );
+   n = n.multiply( 1 / n.distanceFrom( $V( [ 0, 0, 0 ] ) ) );
+   var d = n.dot( $V( [ 0, 0, 1 ] ) );
+   var v = Math.floor( 255 * d );
+
+   return 'rgb(' + v + ', ' + v + ', ' + v + ')';
+}
