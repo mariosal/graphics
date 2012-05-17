@@ -4,7 +4,7 @@
     <head>
         <title>3D Cube Dragging</title>
 
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css' />
         <link href='../css/style.css' rel='stylesheet' type='text/css' />
         <style>
             canvas {
@@ -25,10 +25,10 @@
                 var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
 
                 var project = [
-                    [ 1, 0,  0,    0 ],
-                    [ 0, 1,  0,    0 ],
-                    [ 0, 0, -0.2,  0 ],
-                    [ 0, 0,  1,    1 ]
+                    [ 1, 0,  0,   0 ],
+                    [ 0, 1,  0,   0 ],
+                    [ 0, 0, -0.2, 0 ],
+                    [ 0, 0,  1,   1 ]
                 ];
 
                 var render = function ( ctx, vertices, indices ) {

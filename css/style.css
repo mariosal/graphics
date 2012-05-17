@@ -1,7 +1,6 @@
-h1 {
+h1, div {
     text-align: center;
     font-family: 'Droid Sans';
-    font-weight: normal;
 }
 canvas {
     display: block;

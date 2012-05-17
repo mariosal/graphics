@@ -4,7 +4,7 @@
     <head>
         <title>3D Cube Rotation</title>
 
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css' />
         <link href='../css/style.css' rel='stylesheet' type='text/css' />
     </head>
 
@@ -19,46 +19,11 @@
             <![CDATA[
                 var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
 
-                var vertices = [
-                    [ -1,  1,  1, 1 ],
-                    [  1,  1,  1, 1 ],
-                    [  1, -1,  1, 1 ],
-                    [ -1, -1,  1, 1 ],
-                    [ -1,  1, -1, 1 ],
-                    [  1,  1, -1, 1 ],
-                    [  1, -1, -1, 1 ],
-                    [ -1, -1, -1, 1 ]
-                ];
-                var indices = [
-                    // Front
-                    [ 0, 2, 1 ], 
-                    [ 0, 3, 2 ],
-
-                    // Back
-                    [ 5, 7, 4 ],
-                    [ 7, 5, 6 ],
-
-                    // Up
-                    [ 5, 4, 1 ],
-                    [ 1, 4, 0 ],
-
-                    // Down
-                    [ 2, 3, 7 ],
-                    [ 7, 6, 2 ],
-
-                    // Left
-                    [ 0, 4, 3 ],
-                    [ 3, 4, 7 ],
-
-                    // Right
-                    [ 1, 6, 5 ],
-                    [ 1, 2, 6 ]
-                ];
                 var project = [
-                    [ 1, 0,  0,    0 ],
-                    [ 0, 1,  0,    0 ],
-                    [ 0, 0, -0.2,  0 ],
-                    [ 0, 0,  1,    1 ]
+                    [ 1, 0,  0,   0 ],
+                    [ 0, 1,  0,   0 ],
+                    [ 0, 0, -0.2, 0 ],
+                    [ 0, 0,  1,   1 ]
                 ];
 
                 var render = function ( ctx, vertices, indices ) {
