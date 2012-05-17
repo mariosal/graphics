@@ -71,30 +71,32 @@
 
                 var mouse;
                 document.onmousedown = function ( e ) {
-                    mouse = {
-                        x: e.clientX,
-                        y: e.clientY
-                    };
-
-                    document.onmousemove = function ( e ) {
-                        thetaX = -( mouse.y - e.clientY ) / 100;
-                        thetaY =  ( mouse.x - e.clientX ) / 100;
-                        vertices = $M( vertices ).x(
-                            $M( rotateX( thetaX ) ).x(
-                                $M( rotateY( thetaY ) )
-                            )
-                        ).elements;
-                        render(
-                            ctx,
-                            $M( vertices ).x( $M( project ) ).elements,
-                            indices
-                        );
-
+                    if ( e.which == 1 ) {
                         mouse = {
                             x: e.clientX,
                             y: e.clientY
                         };
-                    };
+
+                        document.onmousemove = function ( e ) {
+                            thetaX = -( mouse.y - e.clientY ) / 100;
+                            thetaY =  ( mouse.x - e.clientX ) / 100;
+                            vertices = $M( vertices ).x(
+                                $M( rotateX( thetaX ) ).x(
+                                    $M( rotateY( thetaY ) )
+                                )
+                            ).elements;
+                            render(
+                                ctx,
+                                $M( vertices ).x( $M( project ) ).elements,
+                                indices
+                            );
+
+                            mouse = {
+                                x: e.clientX,
+                                y: e.clientY
+                            };
+                        };
+                    }
                 };
                 document.onmouseup = function () {
                     document.onmousemove = function () {};

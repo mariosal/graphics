@@ -88,50 +88,52 @@
                     }
                 } );
                 document.onmousedown = function ( e ) {
-                    mouse = {
-                        x: e.clientX,
-                        y: e.clientY
-                    };
-
-                    document.onmousemove = function ( e ) {
-                        thetaX = -( mouse.y - e.clientY ) / 100;
-                        thetaY =  ( mouse.x - e.clientX ) / 100;
-                        vertices = $M( vertices ).x(
-                            $M( rotateX( thetaX ) ).x(
-                                $M( rotateY( thetaY ) )
-                            )
-                        ).elements;
-
-                        indices.sort( function ( a, b ) {
-                            var aa = vertices[ a[ 0 ] ];
-                            var ab = vertices[ a[ 1 ] ];
-                            var ac = vertices[ a[ 2 ] ];
-
-                            var ba = vertices[ b[ 0 ] ];
-                            var bb = vertices[ b[ 1 ] ];
-                            var bc = vertices[ b[ 2 ] ];
-
-                            aAvg = ( aa[ 2 ] + ab[ 2 ] + ac[ 2 ] ) / 3;
-                            bAvg = ( ba[ 2 ] + bb[ 2 ] + bc[ 2 ] ) / 3;
-
-                            return aAvg - bAvg;
-                        } );
-
-                        indices.forEach( function( value, i ) {
-                            var a = vertices[ value[ 0 ] ];
-                            var b = vertices[ value[ 1 ] ];
-                            var c = vertices[ value[ 2 ] ];
-
-                            if ( ccw( a, b, c ) > 0 ) {
-                                colors[ i ] = flatShading( a, b, c );
-                            }
-                        } );
-
+                    if ( e.which == 1 ) {
                         mouse = {
                             x: e.clientX,
                             y: e.clientY
                         };
-                    };
+
+                        document.onmousemove = function ( e ) {
+                            thetaX = -( mouse.y - e.clientY ) / 100;
+                            thetaY =  ( mouse.x - e.clientX ) / 100;
+                            vertices = $M( vertices ).x(
+                                $M( rotateX( thetaX ) ).x(
+                                    $M( rotateY( thetaY ) )
+                                )
+                            ).elements;
+
+                            indices.sort( function ( a, b ) {
+                                var aa = vertices[ a[ 0 ] ];
+                                var ab = vertices[ a[ 1 ] ];
+                                var ac = vertices[ a[ 2 ] ];
+
+                                var ba = vertices[ b[ 0 ] ];
+                                var bb = vertices[ b[ 1 ] ];
+                                var bc = vertices[ b[ 2 ] ];
+
+                                aAvg = ( aa[ 2 ] + ab[ 2 ] + ac[ 2 ] ) / 3;
+                                bAvg = ( ba[ 2 ] + bb[ 2 ] + bc[ 2 ] ) / 3;
+
+                                return aAvg - bAvg;
+                            } );
+
+                            indices.forEach( function( value, i ) {
+                                var a = vertices[ value[ 0 ] ];
+                                var b = vertices[ value[ 1 ] ];
+                                var c = vertices[ value[ 2 ] ];
+
+                                if ( ccw( a, b, c ) > 0 ) {
+                                    colors[ i ] = flatShading( a, b, c );
+                                }
+                            } );
+
+                            mouse = {
+                                x: e.clientX,
+                                y: e.clientY
+                            };
+                        };
+                    }
                 };
                 document.onmouseup = function () {
                     document.onmousemove = function () {};
