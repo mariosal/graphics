@@ -57,7 +57,7 @@
                         var c = vertices[ value[ 2 ] ];
 
                         if ( ccw( a, b, c ) > 0 ) {
-                            drawTriangle( ctx, a, b, c, colors[ i ], 'black' );
+                            drawTriangle( ctx, a, b, c, colors[ i ], colors[ i ] );
                         }
                     } );
                 };
@@ -126,8 +126,8 @@
                                 var bb = vertices[ b[ 1 ] ];
                                 var bc = vertices[ b[ 2 ] ];
 
-                                aAvg = ( aa[ 2 ] + ab[ 2 ] + ac[ 2 ] ) / 3;
-                                bAvg = ( ba[ 2 ] + bb[ 2 ] + bc[ 2 ] ) / 3;
+                                aAvg = aa[ 2 ] + ab[ 2 ] + ac[ 2 ];
+                                bAvg = ba[ 2 ] + bb[ 2 ] + bc[ 2 ];
 
                                 return aAvg - bAvg;
                             } );
