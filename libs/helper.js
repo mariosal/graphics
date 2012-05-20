@@ -44,5 +44,5 @@ function flatShading( a, b, c ) {
    var d = n.dot( $V( [ 0, 0, 1 ] ) );
    var v = Math.floor( 255 * d );
 
-   return 'rgb(' + v + ', ' + v + ', ' + v + ')';
-}
+   return 'rgb( ' + v + ', ' + v + ', ' + v + ' )';
+};
