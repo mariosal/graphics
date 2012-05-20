@@ -13,96 +13,48 @@
     </head>
 
     <body>
-        <canvas width='600' height='600'></canvas>
+        <canvas width='500' height='500'></canvas>
 
         <script src='../libs/sylvester.js' type='application/javascript'></script>
-        <script src='../libs/helper.js' type='application/javascript'></script>
+        <script src='array.js' type='application/javascript'></script>
         <script src='cube.js' type='application/javascript'></script>
+        <script src='render.js' type='application/javascript'></script>
         <script type='application/javascript'>
             <![CDATA[
-                var ctx = document.querySelector( 'canvas' ).getContext( '2d' );
-
-                var project = [
-                    [ 1, 0,  0,   0 ],
-                    [ 0, 1,  0,   0 ],
-                    [ 0, 0, -0.2, 0 ],
-                    [ 0, 0,  1,   1 ]
-                ];
-
-                var render = function ( ctx, vertices, indices ) {
-                    ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
-
-                    for ( var i = 0; i < vertices.length; ++i ) {
-                        vertices[ i ][ 0 ] /= vertices[ i ][ 2 ];
-                        vertices[ i ][ 1 ] /= vertices[ i ][ 2 ];
-                    }
-                    // Move by an offset
-                    var size = {
-                        x: ctx.canvas.width,
-                        y: ctx.canvas.height
-                    };
-                    vertices = $M( vertices ).x( $M( [
-                        [ size.x / 4, 0,          0, 0 ],
-                        [ 0,          size.y / 4, 0, 0 ],
-                        [ 0,          0,          1, 0 ],
-                        [ size.x / 2, size.y / 2, 0, 1 ]
-                    ] ) ).elements;
-
-                    var color = 0;
-                    var colors = [ 'red', 'green', 'blue', 'magenta', 'cyan', 'yellow' ];
-                    indices.forEach( function( value ) {
-                        var a = vertices[ value[ 0 ] ];
-                        var b = vertices[ value[ 1 ] ];
-                        var c = vertices[ value[ 2 ] ];
-
-                        if ( ccw( a, b, c ) > 0 ) {
-                            drawTriangle( ctx, a, b, c, colors[ Math.floor( color / 2 ) ], colors[ Math.floor( color/ 2 ) ] );
-                        }
-                        ++color;
-                    } );
-                };
-                vertices = $M( vertices ).x(
-                    $M( rotateX( Math.PI / 4 ) ).x(
-                        $M( rotateY( Math.PI / 4 ) )
-                    )
-                ).elements;
-                render(
-                    ctx,
-                    $M( vertices ).x( $M( project ) ).elements,
-                    indices
+                var render = new Render(
+                    document.querySelector( 'canvas' ).getContext( '2d' )
                 );
+                render.ctx.translate( render.WIDTH / 2, render.HEIGHT / 2 );
+
+                var rotateCube = new Cube();
+                var projectCube = new Cube();
+
+                projectCube.vertices = rotateCube.vertices.copy();
+                projectCube.project();
+                render.draw( projectCube );
 
                 var mouse;
                 document.onmousedown = function ( e ) {
                     if ( e.which == 1 ) {
-                        mouse = {
-                            x: e.clientX,
-                            y: e.clientY
-                        };
+                        mouse = [ e.clientX, e.clientY ];
 
                         document.onmousemove = function ( e ) {
-                            thetaX = -( mouse.y - e.clientY ) / 100;
-                            thetaY =  ( mouse.x - e.clientX ) / 100;
-                            vertices = $M( vertices ).x(
-                                $M( rotateX( thetaX ) ).x(
-                                    $M( rotateY( thetaY ) )
-                                )
-                            ).elements;
-                            render(
-                                ctx,
-                                $M( vertices ).x( $M( project ) ).elements,
-                                indices
-                            );
+                            thetaX = -( mouse[ 1 ] - e.clientY ) / 50;
+                            thetaY =  ( mouse[ 0 ] - e.clientX ) / 50;
+                            rotateCube.rotateX( thetaX );
+                            rotateCube.rotateY( thetaY );
 
-                            mouse = {
-                                x: e.clientX,
-                                y: e.clientY
-                            };
+                            projectCube.vertices = rotateCube.vertices.copy();
+                            projectCube.project();
+                            render.draw( projectCube );
+
+                            mouse = [ e.clientX, e.clientY ];
                         };
                     }
                 };
                 document.onmouseup = function () {
-                    document.onmousemove = function () {};
+                    document.onmousemove = function () {
+                    };
                 };
             ]]>
         </script>
