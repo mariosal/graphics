@@ -2,24 +2,16 @@ var Renderer = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
     this.H = canvas.height;
     this.W = canvas.width;
 
-    this.theta = 0;
-    this.time = new Date();
+    this.z = -7;
+    this.oldRotation = null;
 
     this.program = null;
-    this.vertexBuffer = null;
-    this.colorBuffer = null;
     this.indexBuffer = null;
-
-    this.project = null;
-    this.move = null;
 
     this.gl = canvas.getContext( 'experimental-webgl' );
     this.gl.viewport( 0, 0, this.W, this.H );
 
     this.gl.enable( this.gl.DEPTH_TEST );
-    this.gl.enable( this.gl.CULL_FACE );
-    this.gl.cullFace( this.gl.BACK );
-
     this.gl.clearColor( 1, 1, 1, 1 );
 
     var self = this;
@@ -35,46 +27,26 @@ var Renderer = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
 
             self.initShaders( vertexShader, fragmentShader );
             self.initBuffer();
+
+            var projection = mat4.create();
+            mat4.perspective( 45, self.W / self.H, 1, 16, projection );
+            self.gl.uniformMatrix4fv( self.program.projection, false, projection );
+
+            self.oldRotation = mat4.create();
+            mat4.identity( self.oldRotation );
+            self.gl.uniformMatrix4fv( self.program.rotation, false, self.oldRotation );
+
+            self.setZoom( self.z );
             self.draw();
         } );
     } );
 };
 Renderer.prototype = {
-    animate: function () {
-        var now = new Date();
-        this.theta += ( now - this.time ) / 10;
-        this.time = now;
-    },
     draw: function () {
         this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-
-        mat4.identity( this.move );
-        mat4.translate( this.move, [ 0, 0, -7 ] );
-        mat4.rotate( this.move, this.theta.toRad(), [ 1, 1, 0 ] );
-        this.gl.uniformMatrix4fv( this.program.move, false, this.move );
-
         this.gl.drawElements( this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0 );
 
-        this.animate();
         window.webkitRequestAnimationFrame( this.draw.bind( this ) );
-    },
-    initShaders: function ( vertexShader, fragmentShader ) {
-        this.program = this.gl.createProgram();
-
-        this.gl.attachShader( this.program, vertexShader );
-        this.gl.attachShader( this.program, fragmentShader );
-
-        this.gl.linkProgram( this.program );
-        this.gl.useProgram( this.program );
-
-        this.program.position = this.gl.getAttribLocation( this.program, 'position' );
-        this.gl.enableVertexAttribArray( this.program.position );
-
-        this.program.color = this.gl.getAttribLocation( this.program, 'color' );
-        this.gl.enableVertexAttribArray( this.program.color );
-
-        this.program.project = this.gl.getUniformLocation( this.program, 'project' );
-        this.program.move = this.gl.getUniformLocation( this.program, 'move' );
     },
     initBuffer: function () {
         var vertices = [
@@ -114,13 +86,13 @@ Renderer.prototype = {
             -1,  1,  1,
             -1,  1, -1
         ];
-        this.vertexBuffer = this.gl.createBuffer();
-        this.vertexBuffer.itemSize = 3;
-        this.vertexBuffer.numItems = 4;
+        var vertexBuffer = this.gl.createBuffer();
+        vertexBuffer.itemSize = 3;
+        vertexBuffer.numItems = 4;
 
-        this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.vertexBuffer );
+        this.gl.bindBuffer( this.gl.ARRAY_BUFFER, vertexBuffer );
         this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( vertices ), this.gl.STATIC_DRAW );
-        this.gl.vertexAttribPointer( this.program.position, this.vertexBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
+        this.gl.vertexAttribPointer( this.program.vertex, vertexBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
 
        var colors = [
             [ 1, 0,   0,   1 ], // Front face
@@ -137,13 +109,13 @@ Renderer.prototype = {
                 unpackedColors = unpackedColors.concat( color );
             }
         }
-        this.colorBuffer = this.gl.createBuffer();
-        this.colorBuffer.itemSize = 4;
-        this.colorBuffer.numItems = 24;
+        var colorBuffer = this.gl.createBuffer();
+        colorBuffer.itemSize = 4;
+        colorBuffer.numItems = 24;
 
-        this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.colorBuffer );
+        this.gl.bindBuffer( this.gl.ARRAY_BUFFER, colorBuffer );
         this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( unpackedColors ), this.gl.STATIC_DRAW );
-        this.gl.vertexAttribPointer( this.program.color, this.colorBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
+        this.gl.vertexAttribPointer( this.program.color, colorBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
 
         var indices = [
             0,  1,  2,  0,  2,  3,  // Front face
@@ -159,12 +131,44 @@ Renderer.prototype = {
 
         this.gl.bindBuffer( this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer );
         this.gl.bufferData( this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array( indices ), this.gl.STATIC_DRAW );
+    },
+    initShaders: function ( vertexShader, fragmentShader ) {
+        this.program = this.gl.createProgram();
 
-        this.project = mat4.create();
-        mat4.perspective( 45, this.W / this.H, 1, 8, this.project );
-        this.gl.uniformMatrix4fv( this.program.project, false, this.project );
+        this.gl.attachShader( this.program, vertexShader );
+        this.gl.attachShader( this.program, fragmentShader );
 
-        this.move = mat4.create();
+        this.gl.linkProgram( this.program );
+        this.gl.useProgram( this.program );
+
+        this.program.vertex = this.gl.getAttribLocation( this.program, 'vertex' );
+        this.gl.enableVertexAttribArray( this.program.vertex );
+
+        this.program.color = this.gl.getAttribLocation( this.program, 'color' );
+        this.gl.enableVertexAttribArray( this.program.color );
+
+        this.program.projection = this.gl.getUniformLocation( this.program, 'projection' );
+        this.program.zoom = this.gl.getUniformLocation( this.program, 'zoom' );
+        this.program.rotation = this.gl.getUniformLocation( this.program, 'rotation' );
+    },
+    rotate: function ( thetaX, thetaY ) {
+        var rotation = mat4.create();
+        mat4.identity( rotation );
+        mat4.rotate( rotation, thetaX.toRad(), [ 1, 0, 0 ] );
+        mat4.rotate( rotation, thetaY.toRad(), [ 0, 1, 0 ] );
+        mat4.multiply( rotation, this.oldRotation );
+        this.gl.uniformMatrix4fv( this.program.rotation, false, rotation );
+
+        mat4.set( rotation, this.oldRotation );
+        this.gl.uniformMatrix4fv( this.program.oldRotation, false, this.oldRotation );
+    },
+    setZoom: function ( z ) {
+        this.z = z;
+
+        var zoom = mat4.create();
+        mat4.identity( zoom );
+        mat4.translate( zoom, [ 0, 0, this.z ] );
+        this.gl.uniformMatrix4fv( this.program.zoom, false, zoom );
     }
 };
 
