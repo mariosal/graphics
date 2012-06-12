@@ -1,4 +1,4 @@
-var Renderer = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
+var Cube = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
     this.H = canvas.height;
     this.W = canvas.width;
 
@@ -41,7 +41,7 @@ var Renderer = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
         } );
     } );
 };
-Renderer.prototype = {
+Cube.prototype = {
     draw: function () {
         this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
         this.gl.drawElements( this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0 );

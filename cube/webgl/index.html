@@ -10,11 +10,11 @@
         <div><strong>Drag</strong> moves. <strong>Mouse wheel</strong> zooms.</div>
 
         <script src='gl-matrix-min.js'></script>
-        <script src='renderer.js'></script>
+        <script src='cube.js'></script>
         <script src='network.js'></script>
         <script src='controller.js'></script>
         <script>
-            var renderer = new Renderer( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
+            var cube = new Cube( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
         </script>
     </body>
 </html>
