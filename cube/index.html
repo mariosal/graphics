@@ -6,46 +6,15 @@
     </head>
 
     <body>
-        <div id='webgl'></div>
+        <canvas width='500' height='500'></canvas>
         <div><strong>Drag</strong> moves. <strong>Mouse wheel</strong> zooms.</div>
 
-        <script src='http://mrdoob.github.com/three.js/build/Three.js'></script>
+        <script src='gl-matrix-min.js'></script>
+        <script src='cube.js'></script>
+        <script src='network.js'></script>
         <script src='controller.js'></script>
         <script>
-            Number.prototype.toRad = function () {
-                return this * Math.PI / 180;
-            };
-
-            var W = 500, H = 500, NEAR = 0.1, FAR = 20;
-
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setSize( W, H );
-            document.getElementById( 'webgl' ).appendChild( renderer.domElement );
-
-            var scene = new THREE.Scene();
-
-            var camera = new THREE.PerspectiveCamera( 45, W / H, NEAR, FAR );
-            camera.position.set( 0, 0, FAR );
-            scene.add( camera );
-
-            var cube = new THREE.Mesh(
-                new THREE.CubeGeometry( 1, 1, 1 ),
-                new THREE.MeshLambertMaterial( {
-                    color: 0xff00ff
-                } )
-            );
-            cube.position.set( 0, 0, 15 );
-            scene.add( cube );
-
-            var theta = 0;
-            var draw = function () {
-                theta += 1;
-                //cube.rotation.set( theta.toRad(), theta.toRad(), 0 );
-                renderer.render( scene, camera );
-
-                requestAnimationFrame( draw );
-            };
-            draw();
+            var cube = new Cube( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
         </script>
     </body>
 </html>
