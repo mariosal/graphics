@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mandelbrot</title>
+
+        <style>
+            canvas {
+                display: block;
+                margin: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas width='800' height='800'></canvas>
+
+        <script>
+            var ctx = document.getElementsByTagName( 'canvas' )[ 0 ].getContext( '2d' );
+            var W = ctx.canvas.width, H = ctx.canvas.height,
+                MIN = -2, MAX = 2,
+                SCALE_X = W / ( MAX - MIN ), SCALE_Y = H / ( MAX - MIN ),
+                STEP_X = 1 / SCALE_X, STEP_Y = 1 / SCALE_Y,
+                MAX_ITER = 100;
+
+            ctx.translate( W / 2, H / 2 );
+            ctx.scale( SCALE_X, SCALE_Y );
+
+            var Complex = function ( a, b ) {
+                this.a = a;
+                this.b = b;
+            };
+            Complex.prototype = {
+                add: function ( z ) {
+                    this.a += z.a;
+                    this.b += z.b;
+                },
+                multiply: function ( z ) {
+                    var aa = this.a * z.a - this.b * z.b,
+                        bb = this.b * z.a + this.a * z.b;
+
+                    this.a = aa;
+                    this.b = bb;
+                },
+                norm: function () {
+                    return Math.sqrt( this.a * this.a + this.b * this.b );
+                }
+            };
+
+            var inside = function ( c ) {
+                var z = new Complex( 0, 0 );
+                for ( var i = 0; i < MAX_ITER; ++i ) {
+                    z.multiply( z );
+                    z.add( c );
+                    if ( z.norm() > 2 ) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+            var draw = function ( x, y ) {
+                ctx.fillStyle = 'black';
+                ctx.fillRect( x, y, STEP_X, STEP_Y );
+            };
+
+            ctx.clearRect( -W / 2, -H / 2 );
+            for ( var x = MIN; x < MAX; x += STEP_X ) {
+                for ( var y = MIN; y < MAX; y += STEP_Y ) {
+                    if ( inside( new Complex( x, y ) ) ) {
+                        draw( x, y );
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
