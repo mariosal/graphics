@@ -88,7 +88,7 @@ Cube.prototype = {
         ];
         var vertexBuffer = this.gl.createBuffer();
         vertexBuffer.itemSize = 3;
-        vertexBuffer.numItems = 4;
+        vertexBuffer.numItems = 24;
 
         this.gl.bindBuffer( this.gl.ARRAY_BUFFER, vertexBuffer );
         this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( vertices ), this.gl.STATIC_DRAW );
