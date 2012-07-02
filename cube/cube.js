@@ -26,7 +26,7 @@ var Cube = function ( canvas, vertexShaderURL, fragmentShaderURL ) {
             self.gl.compileShader( fragmentShader );
 
             self.initShaders( vertexShader, fragmentShader );
-            self.initBuffer();
+            self.initBuffers();
 
             var projection = mat4.create();
             mat4.perspective( 45, self.W / self.H, 1, 16, projection );
@@ -48,7 +48,7 @@ Cube.prototype = {
 
         window.webkitRequestAnimationFrame( this.draw.bind( this ) );
     },
-    initBuffer: function () {
+    initBuffers: function () {
         var vertices = [
             // Front face
             -1, -1,  1,
