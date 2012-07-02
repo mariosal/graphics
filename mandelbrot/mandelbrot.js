@@ -33,9 +33,9 @@ Mandelbrot.prototype = {
     initBuffer: function () {
         var vertices = [
              1,  1,
-            -1,  1,
+            -2,  1,
              1, -1,
-            -1, -1
+            -2, -1
         ];
         this.vertexBuffer = this.gl.createBuffer();
         this.vertexBuffer.itemSize = 2;

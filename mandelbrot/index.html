@@ -8,8 +8,8 @@
     <body>
         <canvas width='800' height='800'></canvas>
 
-        <script src='mandelbrot.js'></script>
         <script src='network.js'></script>
+        <script src='mandelbrot.js'></script>
         <script>
             var mandelbrot = new Mandelbrot( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
         </script>
