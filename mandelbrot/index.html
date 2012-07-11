@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>WebGL Mandelbrot</title>
-        <link href='../css/style.css' rel='stylesheet' type='text/css' />
-    </head>
+  <head>
+    <title>WebGL Mandelbrot</title>
+    <link href='../css/style.css' rel='stylesheet' type='text/css' />
+  </head>
 
-    <body>
-        <canvas width='800' height='800'></canvas>
+  <body>
+    <canvas width='800' height='800'></canvas>
 
-        <script src='network.js'></script>
-        <script src='mandelbrot.js'></script>
-        <script>
-            var mandelbrot = new Mandelbrot( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
-        </script>
-    </body>
+    <script src='network.js'></script>
+    <script src='mandelbrot.js'></script>
+    <script>
+      var mandelbrot = new Mandelbrot( document.getElementsByTagName( 'canvas' )[ 0 ], 'vertex.c', 'fragment.c' );
+    </script>
+  </body>
 </html>

@@ -8,6 +8,6 @@ uniform mat4 rotation;
 varying vec4 fragmentColor;
 
 void main( void ) {
-    gl_Position = projection * zoom * rotation * vec4( vertex, 1.0 );
-    fragmentColor = color;
+  gl_Position = projection * zoom * rotation * vec4( vertex, 1.0 );
+  fragmentColor = color;
 }
