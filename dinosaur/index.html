@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Dinosaur</title>
+    <link href='../css/style.css' rel='stylesheet' type='text/css' />
+  </head>
+
+  <body>
+    <canvas width='500' height='500'></canvas>
+    <div><strong>Drag</strong> moves. <strong>Mouse wheel</strong> zooms.</div>
+
+    <script src='../js/gl-matrix-min.js'></script>
+    <script src='network.js'></script>
+    <script src='scene.js'></script>
+    <script src='controller.js'></script>
+    <script>
+      var canvas = document.getElementsByTagName( 'canvas' )[ 0 ];
+
+      var scene = new Scene( canvas );
+
+      // Loading the shaders and the model
+      wget( 'vertex.c', function ( vShaderSrc ) {
+        wget( 'fragment.c', function ( fShaderSrc ) {
+          wget( 'model.json', function ( model ) {
+            scene.initShaders( vShaderSrc, fShaderSrc );
+            scene.initBuffers( JSON.parse( model ) );
+
+            scene.zoom( -50 );
+            scene.render();
+          } );
+        } );
+      } );
+    </script>
+  </body>
+</html>
