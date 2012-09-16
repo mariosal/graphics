@@ -44,7 +44,7 @@ Scene.prototype = {
   initBuffers: function ( model ) {
     var vBuffer = this.gl.createBuffer();
     vBuffer.itemSize = 3;
-    vBuffer.numItems = 4;
+    vBuffer.numItems = model.vertices.length / 3;
     this.gl.bindBuffer( this.gl.ARRAY_BUFFER, vBuffer );
     this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( model.vertices ), this.gl.STATIC_DRAW );
     this.gl.vertexAttribPointer( this.program.vertex, vBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
