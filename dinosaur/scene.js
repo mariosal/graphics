@@ -11,6 +11,7 @@ var Scene = function ( canvas ) {
 
   this.gl = canvas.getContext( 'experimental-webgl' );
   this.gl.viewport( 0, 0, this.w, this.h );
+  this.gl.enable( this.gl.DEPTH_TEST );
   this.gl.clearColor( 1, 1, 1, 1 );
 };
 Scene.prototype = {
@@ -37,6 +38,9 @@ Scene.prototype = {
     this.program.vertex = this.gl.getAttribLocation( this.program, 'vertex' );
     this.gl.enableVertexAttribArray( this.program.vertex );
 
+    this.program.normal = this.gl.getAttribLocation( this.program, 'normal' );
+    this.gl.enableVertexAttribArray( this.program.normal );
+
     this.program.project = this.gl.getUniformLocation( this.program, 'project' );
     this.program.zoom = this.gl.getUniformLocation( this.program, 'zoom' );
     this.program.rot = this.gl.getUniformLocation( this.program, 'rot' );
@@ -48,6 +52,13 @@ Scene.prototype = {
     this.gl.bindBuffer( this.gl.ARRAY_BUFFER, vBuffer );
     this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( model.vertices ), this.gl.STATIC_DRAW );
     this.gl.vertexAttribPointer( this.program.vertex, vBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
+
+    var normalBuffer = this.gl.createBuffer();
+    normalBuffer.itemSize = 3;
+    normalBuffer.numItems = model.normals.length / 3;
+    this.gl.bindBuffer( this.gl.ARRAY_BUFFER, normalBuffer );
+    this.gl.bufferData( this.gl.ARRAY_BUFFER, new Float32Array( model.normals ), this.gl.STATIC_DRAW );
+    this.gl.vertexAttribPointer( this.program.normal, normalBuffer.itemSize, this.gl.FLOAT, false, 0, 0 );
 
     this.indexBuffer = this.gl.createBuffer();
     this.indexBuffer.itemSize = 1;
