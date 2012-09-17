@@ -2,7 +2,6 @@ var Scene = function ( canvas ) {
   this.w = canvas.width;
   this.h = canvas.height;
 
-  this.z = 0;
   this.program = null;
   this.indexBuffer = null;
 
@@ -42,7 +41,7 @@ Scene.prototype = {
     this.gl.enableVertexAttribArray( this.program.normal );
 
     this.program.project = this.gl.getUniformLocation( this.program, 'project' );
-    this.program.zoom = this.gl.getUniformLocation( this.program, 'zoom' );
+    this.program.move = this.gl.getUniformLocation( this.program, 'move' );
     this.program.rot = this.gl.getUniformLocation( this.program, 'rot' );
   },
   initBuffers: function ( model ) {
@@ -76,12 +75,11 @@ Scene.prototype = {
     mat4.rotate( this.rot, thetaY.toRad(), [ 0, 1, 0 ] );
     this.gl.uniformMatrix4fv( this.program.rot, false, this.rot );
   },
-  zoom: function ( z ) {
-    this.z = z;
-    var zoom = mat4.create();
-    mat4.identity( zoom );
-    mat4.translate( zoom, [ 0, -20, this.z ] );
-    this.gl.uniformMatrix4fv( this.program.zoom, false, zoom );
+  move: function ( x, y, z ) {
+    var move = mat4.create();
+    mat4.identity( move );
+    mat4.translate( move, [ x, y, z ] );
+    this.gl.uniformMatrix4fv( this.program.move, false, move );
   }
 };
 

@@ -6,8 +6,7 @@
   </head>
 
   <body>
-    <canvas width='500' height='500'></canvas>
-    <div><strong>Drag</strong> moves. <strong>Mouse wheel</strong> zooms.</div>
+    <canvas width='600' height='600'></canvas>
 
     <script src='../js/gl-matrix-min.js'></script>
     <script src='network.js'></script>
@@ -15,17 +14,15 @@
     <script src='controller.js'></script>
     <script>
       var canvas = document.getElementsByTagName( 'canvas' )[ 0 ];
-
       var scene = new Scene( canvas );
 
-      // Loading the shaders and the model
       wget( 'vertex.c', function ( vShaderSrc ) {
         wget( 'fragment.c', function ( fShaderSrc ) {
           wget( 'model.json', function ( model ) {
             scene.initShaders( vShaderSrc, fShaderSrc );
             scene.initBuffers( JSON.parse( model ) );
 
-            scene.zoom( -50 );
+            scene.move( 0, -23, -28 );
             scene.render();
           } );
         } );
