@@ -17,7 +17,7 @@ Scene.prototype = {
   render: function () {
     this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
     this.gl.drawElements( this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0 );
-    window.webkitRequestAnimationFrame( this.render.bind( this ) );
+    window.rAF( this.render.bind( this ) );
   },
   initShaders: function ( vShaderSrc, fShaderSrc ) {
     var vShader = this.gl.createShader( this.gl.VERTEX_SHADER );

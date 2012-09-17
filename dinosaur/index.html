@@ -16,6 +16,8 @@
       var canvas = document.getElementsByTagName( 'canvas' )[ 0 ];
       var scene = new Scene( canvas );
 
+      window.rAF = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
       wget( 'vertex.c', function ( vShaderSrc ) {
         wget( 'fragment.c', function ( fShaderSrc ) {
           wget( 'model.json', function ( model ) {
