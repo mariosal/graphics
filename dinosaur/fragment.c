@@ -9,8 +9,6 @@ void main( void ) {
   vec4 lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
   vec3 lightPos = vec3( 0.0, 20.0, 50.0 );
 
-  vec3 nor = normalize( vNormal );
-
   vec4 ambient = dinoColor * lightAmbient;
   vec4 diffuse = max( 0.0, dot( normalize( vNormal ), normalize( lightPos - vVertex ) ) ) * dinoColor * lightDiffuse;
 
