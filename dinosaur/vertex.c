@@ -10,6 +10,6 @@ uniform mat4 rot;
 
 void main( void ) {
   gl_Position = project * move * rot * vec4( vertex, 1.0 );
-  vVertex = vertex;
-  vNormal = ( rot * vec4( normal, 1.0 ) ).xyz;
+  vVertex = ( move * rot * vec4( vertex, 1.0 ) ).xyz;
+  vNormal = ( rot * vec4( normal, 0.0 ) ).xyz;
 }
