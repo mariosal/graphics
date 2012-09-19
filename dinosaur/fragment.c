@@ -18,7 +18,7 @@ void main( void ) {
 
   vec4 ambient = dinoColor * lightAmbient;
   vec4 diffuse = max( 0.0, dot( N, LV ) ) * dinoColor * lightDiffuse;
-  vec4 specular = max( 0.0, dot( dot( 2.0 * LV, N ) * N - LV, normalize( -vVertex ) ) ) * dinoSpecular * lightSpecular;
+  vec4 specular = pow( max( 0.0, dot( dot( 2.0 * LV, N ) * N - LV, normalize( -vVertex ) ) ), 3.0 ) * dinoSpecular * lightSpecular;
 
   gl_FragColor = min( vec4( 1.0, 1.0, 1.0, 1.0 ), ambient + diffuse + specular );
 }
