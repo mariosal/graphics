@@ -46,7 +46,7 @@ Cube.prototype = {
     this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
     this.gl.drawElements( this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0 );
 
-    window.webkitRequestAnimationFrame( this.draw.bind( this ) );
+    window.requestAnimationFrame( this.draw.bind( this ) );
   },
   initBuffers: function () {
     var vertices = [

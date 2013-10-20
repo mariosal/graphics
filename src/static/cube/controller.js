@@ -1,10 +1,13 @@
-document.onmousewheel = function ( e ) {
-  var d = e.wheelDeltaY / 1000;
+var mousewheelevt= /Firefox/i.test(navigator.userAgent)? 'DOMMouseScroll' : 'mousewheel'
+
+document.addEventListener(mousewheelevt, function ( e ) {
+  var deltaY = e.detail ? -120 * e.detail : e.wheelDeltaY;
+  var d = deltaY / 1000;
   if ( cube.z + d > -15 && cube.z + d < -5 ) {
     cube.setZoom( cube.z + d );
   }
-  return false;
-};
+  e.preventDefault();
+});
 document.onmousedown = function ( e ) {
   if ( e.which == 1 ) {
     mouse = [ e.clientX, e.clientY ];
